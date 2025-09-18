@@ -1,3 +1,5 @@
+import sys
+import subprocess
 import speech_recognition as sr
 import pyttsx3
 
@@ -15,128 +17,188 @@ from Jarvis.features import system_stats
 from Jarvis.features import loc
 
 
-engine = pyttsx3.init('sapi5')
-voices = engine.getProperty('voices')
-engine.setProperty('voices', voices[0].id)
+# =========================
+# Text-to-Speech utilities
+# =========================
+def _init_tts():
+    """
+    Try to init pyttsx3 with a sensible driver for the OS.
+    If it fails (e.g., PyObjC/objc import issues on macOS), return None
+    so we can fall back to `say` on macOS.
+    """
+    if sys.platform.startswith("win"):
+        candidates = ("sapi5", None)
+    elif sys.platform == "darwin":
+        candidates = ("nsss", None)
+    else:
+        candidates = ("espeak", None)
 
+    for drv in candidates:
+        try:
+            eng = pyttsx3.init(drv)
+            # Pick an English-ish voice if available
+            voices = eng.getProperty("voices") or []
+            voice_id = None
+            for v in voices:
+                name = (getattr(v, "name", "") or "").lower()
+                lang = ",".join(getattr(v, "languages", [])).lower() if hasattr(v, "languages") else ""
+                if "en" in name or "en" in lang:
+                    voice_id = v.id
+                    break
+            if not voice_id and voices:
+                voice_id = voices[0].id
+            if voice_id:
+                eng.setProperty("voice", voice_id)
+            eng.setProperty("rate", 175)
+            return eng
+        except Exception as e:
+            print(f"pyttsx3 init with driver {drv or 'default'} failed: {e}")
+    return None
+
+
+_ENGINE = _init_tts()
+
+
+def speak(text: str) -> bool:
+    """
+    Speak text via pyttsx3 if available, otherwise fall back to macOS `say`.
+    """
+    if _ENGINE is not None:
+        try:
+            _ENGINE.say(text)
+            _ENGINE.runAndWait()
+            return True
+        except Exception as e:
+            print("pyttsx3 error, using 'say' fallback:", e)
+
+    # Fallback (works on macOS)
+    try:
+        if sys.platform == "darwin":
+            subprocess.run(["say", text])
+            return True
+    except Exception as e:
+        print("Fallback 'say' failed:", e)
+    return False
+
+
+# =========================
+# Assistant
+# =========================
 class JarvisAssistant:
     def __init__(self):
         pass
 
-    def mic_input(self):
+    # ---------- Speech input ----------
+    def mic_input(self, *, device_index=None, timeout=5, phrase_time_limit=6, language="en-US"):
         """
-        Fetch input from mic
-        return: user's voice input as text if true, false if fail
+        Listen once and return recognized text (lowercased). Returns "" on failure.
+        - device_index: set to a specific mic index if needed
+        - timeout: max seconds to wait for speech to start
+        - phrase_time_limit: max seconds to capture once speaking
+        - language: use "en-US" on macOS; change if you prefer
         """
+        r = sr.Recognizer()
+        r.dynamic_energy_threshold = True  # auto-adjusts to room noise
+
         try:
-            r = sr.Recognizer()
-            # r.pause_threshold = 1
-            # r.adjust_for_ambient_noise(source, duration=1)
-            with sr.Microphone() as source:
-                print("Listening....")
-                r.energy_threshold = 4000
-                audio = r.listen(source)
-            try:
-                print("Recognizing...")
-                command = r.recognize_google(audio, language='en-in').lower()
-                print(f'You said: {command}')
-            except:
-                print('Please try again')
-                command = self.mic_input()
-            return command
+            with sr.Microphone(device_index=device_index) as source:
+                print("Listening…")
+                r.adjust_for_ambient_noise(source, duration=0.7)
+                audio = r.listen(source, timeout=timeout, phrase_time_limit=phrase_time_limit)
+        except sr.WaitTimeoutError:
+            print("No speech detected (timeout).")
+            return ""
         except Exception as e:
-            print(e)
-            return  False
+            print("Mic error:", e)
+            return ""
 
+        try:
+            print("Recognizing…")
+            text = r.recognize_google(audio, language=language)
+            print("You said:", text)
+            return text.lower()
+        except sr.UnknownValueError:
+            print("Sorry, I didn’t catch that.")
+            return ""
+        except sr.RequestError as e:
+            print("Speech API error:", e)
+            return ""
 
+    # ---------- Speech output ----------
     def tts(self, text):
         """
-        Convert any text to speech
-        :param text: text(String)
-        :return: True/False (Play sound if True otherwise write exception to log and return  False)
+        Convert any text to speech.
         """
         try:
-            engine.say(text)
-            engine.runAndWait()
-            engine.setProperty('rate', 175)
-            return True
-        except:
-            t = "Sorry I couldn't understand and handle this input"
-            print(t)
+            return speak(text)
+        except Exception as e:
+            print("TTS failed:", e)
             return False
 
+    # ---------- Features ----------
     def tell_me_date(self):
-
         return date_time.date()
 
     def tell_time(self):
-
         return date_time.time()
 
     def launch_any_app(self, path_of_app):
         """
-        Launch any windows application 
-        :param path_of_app: path of exe 
-        :return: True is success and open the application, False if fail
+        Launch any Windows application.
         """
         return launch_app.launch_app(path_of_app)
 
     def website_opener(self, domain):
         """
-        This will open website according to domain
-        :param domain: any domain, example "youtube.com"
-        :return: True if success, False if fail
+        Open a website by domain (e.g., 'youtube.com').
         """
         return website_open.website_opener(domain)
 
-
     def weather(self, city):
         """
-        Return weather
-        :param city: Any city of this world
-        :return: weather info as string if True, or False
+        Return weather info as string or False.
         """
         try:
-            res = weather.fetch_weather(city)
+            return weather.fetch_weather(city)
         except Exception as e:
             print(e)
-            res = False
-        return res
+            return False
 
     def tell_me(self, topic):
         """
-        Tells about anything from wikipedia
-        :param topic: any string is valid options
-        :return: First 500 character from wikipedia if True, False if fail
+        Summary from Wikipedia.
         """
         return wikipedia.tell_me_about(topic)
 
     def news(self):
         """
-        Fetch top news of the day from google news
-        :return: news list of string if True, False if fail
+        Top news of the day.
         """
         return news.get_news()
-    
-    def send_mail(self, sender_email, sender_password, receiver_email, msg):
 
+    def send_mail(self, sender_email, sender_password, receiver_email, msg):
         return send_email.mail(sender_email, sender_password, receiver_email, msg)
 
     def google_calendar_events(self, text):
-        service = google_calendar.authenticate_google()
-        date = google_calendar.get_date(text) 
-        
-        if date:
-            return google_calendar.get_events(date, service)
-        else:
-            pass
-    
+        try:
+            service = google_calendar.authenticate_google()
+            date = google_calendar.get_date(text)
+            if date:
+                return google_calendar.get_events(date, service)
+        except FileNotFoundError:
+            print("Google Calendar disabled: credentials.json not found.")
+            self.tts("Google Calendar is not set up yet.")
+            return []
+        except Exception as e:
+            print("Google Calendar error:", e)
+            return []
+
     def search_anything_google(self, command):
         google_search.google_search(command)
 
     def take_note(self, text):
         note.note(text)
-    
+
     def system_info(self):
         return system_stats.system_stats()
 

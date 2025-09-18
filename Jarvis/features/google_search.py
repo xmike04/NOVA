@@ -1,31 +1,35 @@
+# Jarvis/features/google_search.py
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-import re, pyttsx3
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+import urllib.parse
+import webbrowser
 
+def google_search(query: str):
+    # Fall back to system browser if Selenium/Chrome fails for any reason
+    try:
+        opts = Options()
+        # comment the next line if you want to see the browser window
+        opts.add_argument("--headless=new")
+        opts.add_argument("--no-sandbox")
+        opts.add_argument("--disable-gpu")
+        opts.add_argument("--disable-dev-shm-usage")
 
+        # On macOS this will auto-download a matching ChromeDriver and launch Chrome/Chromium
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=opts)
 
-def speak(text):
-    engine = pyttsx3.init('sapi5')
-    voices = engine.getProperty('voices')
-    engine.setProperty('voices', voices[0].id)
-    engine.say(text)
-    engine.runAndWait()
-    engine.setProperty('rate', 180)
+        # Do a very basic search open (you can expand to scraping later)
+        q = urllib.parse.quote_plus(query)
+        url = f"https://www.google.com/search?q={q}"
+        driver.get(url)
 
-
-def google_search(command):
-
-    reg_ex = re.search('search google for (.*)', command)
-    search_for = command.split("for", 1)[1]
-    url = 'https://www.google.com/'
-    if reg_ex:
-        subgoogle = reg_ex.group(1)
-        url = url + 'r/' + subgoogle
-    speak("Okay sir!")
-    speak(f"Searching for {subgoogle}")
-    driver = webdriver.Chrome(
-        executable_path='driver/chromedriver.exe')
-    driver.get('https://www.google.com')
-    search = driver.find_element_by_name('q')
-    search.send_keys(str(search_for))
-    search.send_keys(Keys.RETURN)
+        # Keep the tab open for a bit or until other code closes it. For demo, leave it open 5s.
+        # import time; time.sleep(5)
+        # driver.quit()  # uncomment if you want it to close automatically
+    except Exception as e:
+        # As a fallback, just open the search in the default browser
+        q = urllib.parse.quote_plus(query)
+        url = f"https://www.google.com/search?q={q}"
+        webbrowser.open(url)
+        print("Selenium failed; opened in default browser instead:", e)
