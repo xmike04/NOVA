@@ -1,4 +1,4 @@
-# JARVIS (Just a Rather Very Intelligent System)
+# NOVA (Neural Operating Voice Assistant)
 
 #### This was my attempt to make a voice assistant similar to JARVIS (in iron man movie)
 #### Let's be honest, it's not as intelligent as in the movie, but it can do a lot of cool things and automate your daily tasks you do on your personal computers/laptops.
@@ -28,7 +28,7 @@ It can do a lot of cool things, some of them being:
 - Tells top headlines (via Times of India)
 - Plays music
 - Send email (with subject and content)
-- Calculate any mathematical expression (example: Jarvis, calculate x + 135 - 234 = 345)
+- Calculate any mathematical expression (example: NOVA, calculate x + 135 - 234 = 345)
 - Answer any generic question (via Wolframalpha)
 - Take important note in notepad
 - Tells a random joke
@@ -53,10 +53,10 @@ To run this program you will require a bunch of API keys. Register your API key 
     email = "<your_email>"
     email_password = "<your_email_password>"
     wolframalpha_id = "<your_wolframalpha_id>"
-- Copy the config.py file in Jarvis>config folder
+- Copy the config.py file in NOVA>config folder
 - Make a new python environment
-    If you are using anaconda just type ```conda create -n jarvis python==3.8.5 ``` in anaconda prompt
-- To activate the environment ``` conda activate jarvis ```
+    If you are using anaconda just type ```conda create -n nova python==3.8.5 ``` in anaconda prompt
+- To activate the environment ``` conda activate nova ```
 - Navigate to the directory of your project
 - Install all the requirements by just hitting ``` pip install -r requirements.txt ```
 - Install PyAudio from wheel file by following instructions given [here](https://stackoverflow.com/a/55630212)
@@ -67,13 +67,13 @@ To run this program you will require a bunch of API keys. Register your API key 
 
 
     ├── driver
-    ├── Jarvis              # Main folder for features 
+    ├── NOVA                # Main folder for features 
     │   ├── config          # Contains all secret API Keys
-    │   ├── features        # All functionalities of JARVIS 
+    │   ├── features        # All functionalities of NOVA 
     │   └── utils           # GUI images
     ├── __init__.py         # Definition of feature's functions
     ├── gui.ui              # GUI file (in .ui format)
-    ├── main.py             # main driver program of Jarvis
+    ├── main.py             # main driver program of NOVA
     ├── requirements.txt    # all dependencies of the program
 
 - The code structure if pretty simple. The code is completely modularized and is highly customizable
@@ -83,10 +83,10 @@ To run this program you will require a bunch of API keys. Register your API key 
   - Add the voice commands through which you want to invoke the function
 
 ## Contribute
-Please read [CONTRIBUTING.md](https://github.com/Gladiator07/JARVIS/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
+Please read [CONTRIBUTING.md](https://github.com/Gladiator07/NOVA/blob/master/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
 
 ## License
-This project is licensed under [MIT License](https://github.com/Gladiator07/JARVIS/blob/master/LICENSE) 2021 Atharva Ingle
+This project is licensed under [MIT License](https://github.com/Gladiator07/NOVA/blob/master/LICENSE) 2021 Atharva Ingle
 
 ## Future Improvements
 - Generalized conversations can be made possible by incorporating Natural Language Processing

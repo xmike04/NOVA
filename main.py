@@ -1,4 +1,4 @@
-from Jarvis import JarvisAssistant
+from NOVA import NOVAAssistant
 import re
 import os
 import random
@@ -20,15 +20,15 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUiType
-from Jarvis.features.gui import Ui_MainWindow
-from Jarvis.config import config
+from NOVA.features.gui import Ui_MainWindow
+from NOVA.config import config
 
-obj = JarvisAssistant()
+obj = NOVAAssistant()
 
 # ================================ MEMORY ===========================================================================================================
 
-GREETINGS = ["hello jarvis", "jarvis", "wake up jarvis", "you there jarvis", "time to work jarvis", "hey jarvis",
-             "ok jarvis", "are you there"]
+GREETINGS = ["hello nova", "nova", "wake up nova", "you there nova", "time to work nova", "hey nova",
+             "ok nova", "are you there"]
 GREETINGS_RES = ["always there for you sir", "i am ready sir",
                  "your wish my command", "how can i help you sir?", "i am online and ready sir"]
 
@@ -63,7 +63,7 @@ def computational_intelligence(question):
         return None
     
 def startup():
-    speak("Initializing Jarvis")
+    speak("Initializing NOVA")
     speak("Starting all systems applications")
     speak("Installing and checking all drivers")
     speak("Caliberating and examining all the core processors")
@@ -81,7 +81,7 @@ def startup():
         speak("Good evening")
     c_time = obj.tell_time()
     speak(f"Currently it is {c_time}")
-    speak("I am Jarvis. Online and ready sir. Please tell me how may I help you")
+    speak("I am NOVA. Online and ready sir. Please tell me how may I help you")
     
 
 
@@ -96,7 +96,7 @@ def wish():
         speak("Good evening")
     c_time = obj.tell_time()
     speak(f"Currently it is {c_time}")
-    speak("I am Jarvis. Online and ready sir. Please tell me how may I help you")
+    speak("I am NOVA. Online and ready sir. Please tell me how may I help you")
 # if __name__ == "__main__":
 
 
@@ -306,7 +306,7 @@ class MainThread(QThread):
 
             elif "show me the screenshot" in command:
                 try:
-                    img = Image.open('D://JARVIS//JARVIS_2.0//' + name)
+                    img = Image.open('D://NOVA//NOVA_2.0//' + name)
                     img.show(img)
                     speak("Here it is sir")
                     time.sleep(2)
@@ -351,10 +351,10 @@ class Main(QMainWindow):
     # def run(self):
     #     self.TaskExection
     def startTask(self):
-        self.ui.movie = QtGui.QMovie("Jarvis/utils/images/live_wallpaper.gif")
+        self.ui.movie = QtGui.QMovie("NOVA/utils/images/live_wallpaper.gif")
         self.ui.label.setMovie(self.ui.movie)
         self.ui.movie.start()
-        self.ui.movie = QtGui.QMovie("Jarvis/utils/images/initiating.gif")
+        self.ui.movie = QtGui.QMovie("NOVA/utils/images/initiating.gif")
         self.ui.label_2.setMovie(self.ui.movie)
         self.ui.movie.start()
         timer = QTimer(self)
@@ -372,6 +372,6 @@ class Main(QMainWindow):
 
 
 app = QApplication(sys.argv)
-jarvis = Main()
-jarvis.show()
+nova = Main()
+nova.show()
 exit(app.exec_())

@@ -3,18 +3,18 @@ import subprocess
 import speech_recognition as sr
 import pyttsx3
 
-from Jarvis.features import date_time
-from Jarvis.features import launch_app
-from Jarvis.features import website_open
-from Jarvis.features import weather
-from Jarvis.features import wikipedia
-from Jarvis.features import news
-from Jarvis.features import send_email
-from Jarvis.features import google_search
-from Jarvis.features import google_calendar
-from Jarvis.features import note
-from Jarvis.features import system_stats
-from Jarvis.features import loc
+from NOVA.features import date_time
+from NOVA.features import launch_app
+from NOVA.features import website_open
+from NOVA.features import weather
+from NOVA.features import wikipedia
+from NOVA.features import news
+from NOVA.features import send_email
+from NOVA.features import google_search
+from NOVA.features import google_calendar
+from NOVA.features import note
+from NOVA.features import system_stats
+from NOVA.features import loc
 
 
 # =========================
@@ -84,7 +84,7 @@ def speak(text: str) -> bool:
 # =========================
 # Assistant
 # =========================
-class JarvisAssistant:
+class NOVAAssistant:
     def __init__(self):
         pass
 

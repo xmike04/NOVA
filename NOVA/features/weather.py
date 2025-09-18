@@ -1,5 +1,5 @@
 import requests
-from Jarvis.config import config
+from NOVA.config import config
 
 
 

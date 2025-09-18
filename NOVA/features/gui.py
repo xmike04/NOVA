@@ -13,14 +13,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("Jarvis 2.0")
+        MainWindow.setObjectName("NOVA 2.0")
         MainWindow.resize(1440, 900)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(0, 0, 1440, 900))
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("Jarvis/utils/images/live_wallpaper.gif"))
+        self.label.setPixmap(QtGui.QPixmap("NOVA/utils/images/live_wallpaper.gif"))
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
@@ -36,7 +36,7 @@ class Ui_MainWindow(object):
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(10, 10, 401, 91))
         self.label_2.setText("")
-        self.label_2.setPixmap(QtGui.QPixmap("Jarvis/utils/images/initiating.gif"))
+        self.label_2.setPixmap(QtGui.QPixmap("NOVA/utils/images/initiating.gif"))
         self.label_2.setObjectName("label_2")
         self.textBrowser = QtWidgets.QTextBrowser(self.centralwidget)
         self.textBrowser.setGeometry(QtCore.QRect(640, 30, 291, 61))

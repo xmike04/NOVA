@@ -11,3 +11,17 @@ credentials.json
 *.png
 *.mp4
 *dbs.txt
+# credentials & tokens
+credentials.json
+token.json
+*.pem
+*.p12
+*.key
+*.crt
+# env files
+.env
+.env.*
+# OS cruft / IDE
+.DS_Store
+.vscode/
+.idea/
